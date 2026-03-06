@@ -14,10 +14,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+
+// ✅ Railway requires dynamic port
+const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
 // Request Logging
@@ -49,23 +51,23 @@ app.get('/api/health', (req, res) => {
 // Serve static files in production
 app.use(express.static(join(__dirname, 'dist')));
 
-// Fallback for SPA in production
+// SPA fallback
 app.get('*', (req, res, next) => {
   if (req.url.startsWith('/api')) return next();
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
-// Listen on all interfaces
+// Listen on all interfaces (important for Railway)
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
   ┌──────────────────────────────────────────────────┐
   │  Blake Association Server Running                │
-  │  http://127.0.0.1:${PORT}                          │
+  │  Port: ${PORT}
   └──────────────────────────────────────────────────┘
   `);
 }).on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use. Please stop the other process.`);
+    console.error(`Port ${PORT} is already in use.`);
   } else {
     console.error("Server error:", err);
   }
