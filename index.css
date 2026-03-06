@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-blake-950 text-blake-200 font-sans;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111827; 
+}
+::-webkit-scrollbar-thumb {
+  background: #374151; 
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563; 
+}
