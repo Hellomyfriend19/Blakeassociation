@@ -62,7 +62,10 @@ export const initDatabase = async () => {
         description TEXT NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         is_solved BOOLEAN DEFAULT false,
-        views INTEGER DEFAULT 0
+        views INTEGER DEFAULT 0,
+        reward_points DECIMAL(10, 2) DEFAULT 0,
+        is_anonymous BOOLEAN DEFAULT false,
+        accepted_answer_id VARCHAR(255)
       );
 
       CREATE TABLE IF NOT EXISTS answers (
@@ -71,15 +74,18 @@ export const initDatabase = async () => {
         author_id VARCHAR(255) REFERENCES users(id),
         content TEXT NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        is_accepted BOOLEAN DEFAULT false
+        is_accepted BOOLEAN DEFAULT false,
+        is_anonymous BOOLEAN DEFAULT false
       );
 
       CREATE TABLE IF NOT EXISTS votes (
         id VARCHAR(255) PRIMARY KEY,
         user_id VARCHAR(255) REFERENCES users(id),
         target_id VARCHAR(255),
+        target_type VARCHAR(20),
         type VARCHAR(10) CHECK (type IN ('up', 'down')),
-        UNIQUE(user_id, target_id)
+        value INTEGER,
+        UNIQUE(user_id, target_id, target_type)
       );
 
       CREATE TABLE IF NOT EXISTS reports (
@@ -93,12 +99,10 @@ export const initDatabase = async () => {
 
     console.log("Database initialized successfully.");
 
-    // Seed admin if not exists
     const adminCheck = await pool.query("SELECT * FROM users WHERE username = $1", ['blake']);
     if (adminCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash('Kikolikoioane1', 10);
       const hashedPin = await bcrypt.hash('0000', 10);
-
       await pool.query(
         `INSERT INTO users (id, username, password_hash, pin_hash, role, balance, reputation)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
