@@ -106,7 +106,7 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-blake-500 uppercase text-xs font-bold tracking-wider">Balance</h3>
             <CreditCard className="text-blake-600" size={20} />
           </div>
-          <div className="text-4xl font-mono text-white">{user.balance.toFixed(2)}</div>
+          <div className="text-4xl font-mono text-white">{parseFloat(user.balance).toFixed(2)}</div>
         </div>
 
         <div className="p-6 border border-blake-800 bg-blake-900/20">
@@ -225,7 +225,7 @@ export const Dashboard: React.FC = () => {
                           {isReceive ? tx.senderName : tx.receiverName}
                         </td>
                         <td className={`px-6 py-4 text-right font-mono ${isReceive ? 'text-emerald-500' : 'text-blake-400'}`}>
-                          {isReceive ? '+' : '-'}{tx.amount.toFixed(2)}
+                          {isReceive ? '+' : '-'}{parseFloat(tx.amount).toFixed(2)}
                         </td>
                       </tr>
                     );

@@ -83,7 +83,7 @@ export const Shop: React.FC = () => {
           Spend points on status symbols. Coins are burned to stabilize the economy.
         </p>
         <div className="mt-4 inline-block bg-blake-900 border border-blake-800 px-4 py-2 text-sm font-mono text-emerald-500">
-          Your Balance: {user.balance.toFixed(2)}
+          Your Balance: {parseFloat(user.balance).toFixed(2)}
         </div>
       </header>
 

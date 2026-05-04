@@ -141,7 +141,7 @@ export const AdminPanel: React.FC = () => {
                       </>
                     )}
                     <td className="px-6 py-4 text-right font-mono text-white">
-                      {u.balance.toFixed(2)}
+                      {parseFloat(u.balance).toFixed(2)}
                     </td>
                     <td className="px-6 py-4">
                       {u.is_banned ? (
@@ -181,7 +181,7 @@ export const AdminPanel: React.FC = () => {
               <div className="space-y-4">
                 <div className="bg-blake-950 p-4 border border-blake-800 mb-4">
                   <div className="text-xs text-blake-500 uppercase">Current Balance</div>
-                  <div className="text-2xl font-mono text-white">{selectedUser.balance.toFixed(2)}</div>
+                  <div className="text-2xl font-mono text-white">{parseFloat(selectedUser.balance).toFixed(2)}</div>
                 </div>
 
                 <div className="space-y-2">

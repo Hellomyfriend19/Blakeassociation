@@ -147,7 +147,7 @@ export const Marketplace: React.FC = () => {
         <div>
           <h1 className="text-3xl font-light text-white mb-2">Information Marketplace</h1>
           <p className="text-blake-400 font-mono text-sm">
-            Buy and sell verified information. Balance: <span className="text-emerald-500">{user?.balance.toFixed(2)}</span>
+            Buy and sell verified information. Balance: <span className="text-emerald-500">{parseFloat(user?.balance).toFixed(2)}</span>
           </p>
         </div>
         <Button 
@@ -241,7 +241,7 @@ export const Marketplace: React.FC = () => {
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex items-center gap-1 text-emerald-500 font-mono bg-emerald-900/10 px-2 py-1 border border-emerald-900/30 rounded-sm">
                     <Coins size={14} />
-                    {listing.price.toFixed(1)}
+                    {parseFloat(listing.price).toFixed(1)}
                   </div>
                 </div>
               </div>
