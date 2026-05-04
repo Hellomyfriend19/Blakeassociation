@@ -1,7 +1,7 @@
 import { User, Transaction, AuthResponse, Listing } from '../types';
 
 // API Configuration
-const API_URL = '/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
