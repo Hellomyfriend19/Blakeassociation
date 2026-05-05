@@ -6,6 +6,8 @@ import { Input } from '../components/Input';
 import { AuthService } from '../services/auth';
 import toast from 'react-hot-toast';
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 interface Question {
   id: string;
   title: string;
@@ -31,7 +33,7 @@ export const QABoard: React.FC = () => {
   const fetchQuestions = async () => {
     try {
       const token = AuthService.getToken();
-      const response = await fetch('/api/qa/questions', {
+      const response = await fetch(`${API_BASE}/qa/questions`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) throw new Error('Failed to fetch questions');
@@ -55,7 +57,7 @@ export const QABoard: React.FC = () => {
     setSubmitting(true);
     try {
       const token = AuthService.getToken();
-      const response = await fetch('/api/qa/questions', {
+      const response = await fetch(`${API_BASE}/qa/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +98,6 @@ export const QABoard: React.FC = () => {
         </Button>
       </div>
 
-      {/* Search Bar */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blake-500 w-4 h-4" />
         <input 
@@ -108,7 +109,6 @@ export const QABoard: React.FC = () => {
         />
       </div>
 
-      {/* Questions List */}
       <div className="space-y-4">
         {loading ? (
           <div className="text-center py-12 text-blake-500 font-mono animate-pulse">Loading questions...</div>
@@ -148,16 +148,12 @@ export const QABoard: React.FC = () => {
                     )}
                   </div>
                 </div>
-                <div className="ml-4 flex flex-col items-end">
-                  {/* Could add bounty amount here if implemented */}
-                </div>
               </div>
             </Link>
           ))
         )}
       </div>
 
-      {/* Ask Question Modal */}
       {showAskModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-blake-950 border border-blake-700 w-full max-w-lg p-6 shadow-2xl relative">

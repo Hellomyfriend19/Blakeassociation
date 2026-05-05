@@ -6,6 +6,8 @@ import { AuthService } from '../services/auth';
 import { ReportModal } from '../components/ReportModal';
 import toast from 'react-hot-toast';
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 interface Answer {
   id: string;
   content: string;
@@ -32,8 +34,6 @@ export const QuestionDetails: React.FC = () => {
   const [isAuthor, setIsAuthor] = useState(false);
   const [newAnswer, setNewAnswer] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  
-  // Report State
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportingId, setReportingId] = useState<string | null>(null);
 
@@ -51,7 +51,7 @@ export const QuestionDetails: React.FC = () => {
 
   const fetchQuestionDetails = async () => {
     try {
-      const response = await fetch(`/api/qa/questions/${id}`);
+      const response = await fetch(`${API_BASE}/qa/questions/${id}`);
       if (!response.ok) throw new Error('Failed to fetch question');
       const data = await response.json();
       setQuestion(data.question);
@@ -68,8 +68,7 @@ export const QuestionDetails: React.FC = () => {
     try {
       const token = AuthService.getToken();
       if (!token) return;
-
-      const response = await fetch(`/api/qa/questions/${id}/check-author`, {
+      const response = await fetch(`${API_BASE}/qa/questions/${id}/check-author`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -88,7 +87,7 @@ export const QuestionDetails: React.FC = () => {
     setSubmitting(true);
     try {
       const token = AuthService.getToken();
-      const response = await fetch(`/api/qa/questions/${id}/answers`, {
+      const response = await fetch(`${API_BASE}/qa/questions/${id}/answers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,12 +95,10 @@ export const QuestionDetails: React.FC = () => {
         },
         body: JSON.stringify({ content: newAnswer })
       });
-
       if (!response.ok) throw new Error('Failed to post answer');
-      
       toast.success('Answer posted');
       setNewAnswer('');
-      fetchQuestionDetails(); // Refresh answers
+      fetchQuestionDetails();
     } catch (error) {
       console.error(error);
       toast.error('Failed to post answer');
@@ -113,7 +110,7 @@ export const QuestionDetails: React.FC = () => {
   const handleVote = async (answerId: string, type: 'up' | 'down') => {
     try {
       const token = AuthService.getToken();
-      const response = await fetch(`/api/qa/answers/${answerId}/vote`, {
+      const response = await fetch(`${API_BASE}/qa/answers/${answerId}/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,14 +118,12 @@ export const QuestionDetails: React.FC = () => {
         },
         body: JSON.stringify({ type })
       });
-
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.error || 'Failed to vote');
       }
-      
       toast.success(`Voted ${type}`);
-      fetchQuestionDetails(); // Refresh scores
+      fetchQuestionDetails();
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -139,20 +134,16 @@ export const QuestionDetails: React.FC = () => {
 
     try {
       const token = AuthService.getToken();
-      const response = await fetch(`/api/qa/answers/${answerId}/accept`, {
+      const response = await fetch(`${API_BASE}/qa/answers/${answerId}/accept`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.error || 'Failed to accept answer');
       }
-      
       toast.success('Answer accepted');
-      fetchQuestionDetails(); // Refresh status
+      fetchQuestionDetails();
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -168,7 +159,6 @@ export const QuestionDetails: React.FC = () => {
         Back to Board
       </Button>
 
-      {/* Question Header */}
       <div className="space-y-4 border-b border-blake-800 pb-8">
         <div className="flex items-start justify-between gap-4">
           <h1 className="text-3xl font-light text-white leading-tight">{question.title}</h1>
@@ -193,7 +183,6 @@ export const QuestionDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Answers Section */}
       <div className="space-y-6">
         <h3 className="text-xl font-light text-blake-200 flex items-center gap-2">
           <MessageCircle className="w-5 h-5" />
@@ -210,7 +199,6 @@ export const QuestionDetails: React.FC = () => {
             }`}
           >
             <div className="flex gap-4">
-              {/* Vote Controls */}
               <div className="flex flex-col items-center gap-2 pt-1">
                 <button 
                   onClick={() => handleVote(answer.id, 'up')}
@@ -222,10 +210,8 @@ export const QuestionDetails: React.FC = () => {
                 <span className={`font-mono font-bold ${answer.score > 0 ? 'text-emerald-400' : answer.score < 0 ? 'text-red-400' : 'text-blake-400'}`}>
                   {answer.score}
                 </span>
-                {/* Downvote could be added here if needed */}
               </div>
 
-              {/* Answer Content */}
               <div className="flex-1 space-y-3">
                 <div className="flex justify-between items-start">
                   <div className="text-xs text-blake-500 font-mono flex items-center gap-2">
@@ -254,7 +240,6 @@ export const QuestionDetails: React.FC = () => {
                   {answer.content}
                 </div>
 
-                {/* Actions */}
                 {isAuthor && !question.is_solved && (
                   <div className="pt-2 flex justify-end">
                     <button 
@@ -278,7 +263,6 @@ export const QuestionDetails: React.FC = () => {
         )}
       </div>
 
-      {/* Post Answer Form */}
       <div className="bg-blake-900/30 border border-blake-800 p-6 rounded-lg mt-8">
         <h3 className="text-lg font-light text-white mb-4">Contribute an Answer</h3>
         <form onSubmit={handlePostAnswer} className="space-y-4">

@@ -1,5 +1,6 @@
 import { Question, Answer } from '../types';
 
+//ig bro
 const API_URL = `${import.meta.env.VITE_API_URL || '/api'}/academic`;
 
 const getHeaders = () => {
