@@ -7,6 +7,7 @@ import shopRoutes from './backend/routes/shop.js';
 import qaRoutes from './backend/routes/qa.js';
 import reportRoutes from './backend/routes/report.js';
 import { initDatabase } from './backend/database.js';
+import { startCronJobs } from './backend/tasks.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,8 +27,9 @@ app.use((req, res, next) => {
 
 try {
   initDatabase();
+  startCronJobs();
 } catch (error) {
-  console.error("Failed to initialize database:", error);
+  console.error("Failed to initialize:", error);
 }
 
 app.use('/api/auth', authRoutes);
