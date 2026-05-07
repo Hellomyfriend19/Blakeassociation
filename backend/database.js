@@ -95,7 +95,18 @@ export const initDatabase = async () => {
         reason TEXT NOT NULL,
         timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS system_state (
+        key VARCHAR(255) PRIMARY KEY,
+        value TEXT
+      );
     `);
+
+    // Initialize weekly drop timer if not set
+    await pool.query(
+      `INSERT INTO system_state (key, value) VALUES ('last_weekly_drop', $1) ON CONFLICT (key) DO NOTHING`,
+      [new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)).toISOString()]
+    );
 
     console.log("Database initialized successfully.");
 
