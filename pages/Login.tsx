@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 const SENTENCES = [
   { text: 'You need a favor, you ask for it.', longPause: true },
-  { text: 'Share info, get info.', longPause: false },
+  { text: 'Welcome to Blake Association', longPause: false },
 ];
 
 function splitWords(text: string): string[] {
